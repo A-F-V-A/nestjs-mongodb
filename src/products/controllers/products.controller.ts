@@ -7,6 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config'
 import { ApiTags, ApiOperation } from '@nestjs/swagger'
 
+import { MongoIdPipe } from '../../common/mongo-id/mongo-id.pipe'
 import { ProductsService } from '../services/products.service'
 import { CreateProductDto,UpdateProductDto } from '../dtos/products.dto'
 
@@ -43,7 +44,7 @@ export class ProductsController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getProduct(@Param('id') id: string) {
+  async getProduct(@Param('id',MongoIdPipe) id: string) {
     return {
       message: `This action returns a #${id} product`,
       result: await this.productsService.findOne(id)
@@ -61,7 +62,7 @@ export class ProductsController {
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  async update(@Body() body: UpdateProductDto, @Param('id') id: string){
+  async update(@Body() body: UpdateProductDto, @Param('id',MongoIdPipe) id: string){
     return {
       message: 'Update action',
       id,
@@ -70,7 +71,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string){
+  async delete(@Param('id',MongoIdPipe) id: string){
     return {
       message: 'Delete action',
       id : await this.productsService.delete(id)
