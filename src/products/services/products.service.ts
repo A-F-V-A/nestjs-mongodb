@@ -4,7 +4,7 @@ import { Model } from 'mongoose'
 //import { Db } from 'mongodb'
 
 import { Product } from '../entities/products.entity'
-import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto'
+import { CreateProductDto, UpdateProductDto, FilterProductsDto } from '../dtos/products.dto'
 
 @Injectable()
 export class ProductsService {
@@ -14,7 +14,15 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
-  async findAll() {
+  async findAll(params?: FilterProductsDto) {
+    if(params){
+      const { limit, offset } = params
+      return await this.productModel
+        .find()
+        .skip(offset)
+        .limit(limit)
+        .exec()
+    }
     return await this.productModel.find().exec()
   }
 
