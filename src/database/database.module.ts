@@ -1,5 +1,7 @@
 import { Module, Global } from '@nestjs/common'
+import { ConfigType } from '@nestjs/config'
 import { MongoClient } from 'mongodb'
+import config from '../config'
 
 @Global()
 @Module({
@@ -10,16 +12,24 @@ import { MongoClient } from 'mongodb'
     },
     {
       provide: 'MONGO',
-      useFactory: async () => {
-        const uri = 'mongodb://root:root@localhost:27017/?authSource=admin&readPreference=primary'
+      useFactory: async (configService:ConfigType<typeof config>) => {
+        const {
+          user,
+          password,
+          host,
+          port,
+          name,
+          connection
+        } = configService.mongo
+
+        const uri = `${connection}://${user}:${password}@${host}:${port}/?authSource=admin&readPreference=primary`
         const client = new MongoClient(uri)
         await client.connect()
-        await client.connect()
-        const database = client.db('afva-store')
+        const database = client.db(name)
 
         return database
       },
-      inject: []
+      inject: [config.KEY]
     }
   ],
   exports : ['APP_NAME','MONGO']
