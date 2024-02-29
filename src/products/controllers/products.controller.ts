@@ -20,18 +20,6 @@ export class ProductsController {
       private configService: ConfigService
   ) {}
 
-  @Get('')
-  getProducts(
-    @Query('limit')  limit = 100,
-    @Query('offset') offset = 0,
-    @Query('brand')  brand :string
-  ) {
-    return {
-      message: `This action returns all products. Limit: ${limit}, offset: ${offset}, brand: ${brand}`,
-      result: this.productsService.findAll()
-    }
-  }
-
   @Get('global')
   @ApiOperation({summary: 'Env global'})
   getGlobal(){
@@ -41,53 +29,52 @@ export class ProductsController {
     }
   }
 
-  @Get('tasks')
-  getTask(){
-    return this.productsService.getTask()
-  }
-
-  @Get('filter')
-  getProductFilter() {
+  @Get('')
+  async getProducts(
+    @Query('limit')  limit = 100,
+    @Query('offset') offset = 0,
+    @Query('brand')  brand :string
+  ) {
     return {
-      message: 'This action returns all products'
+      message: `This action returns all products. Limit: ${limit}, offset: ${offset}, brand: ${brand}`,
+      result: await this.productsService.findAll()
     }
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getProduct(@Param('id') id: string) {
+  async getProduct(@Param('id') id: string) {
     return {
       message: `This action returns a #${id} product`,
-      result: this.productsService.findOne(+id)
+      result: await this.productsService.findOne(id)
     }
   }
 
   @Post('')
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() payload: CreateProductDto){
+  async create(@Body() payload: CreateProductDto){
     return {
       message: 'Create action',
-      payload : this.productsService.create(payload)
+      payload : await this.productsService.create(payload)
     }
   }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Body() body: UpdateProductDto, @Param('id') id: string){
+  async update(@Body() body: UpdateProductDto, @Param('id') id: string){
     return {
       message: 'Update action',
       id,
-      body: this.productsService.update(+id, body)
+      body: await this.productsService.update(id, body)
     }
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string){
+  async delete(@Param('id') id: string){
     return {
       message: 'Delete action',
-      id : this.productsService.delete(+id)
+      id : await this.productsService.delete(id)
     }
   }
-
 
 }

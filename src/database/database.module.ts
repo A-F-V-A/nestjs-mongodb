@@ -55,6 +55,6 @@ import config from '../config'
       inject: [config.KEY]
     }*/
   ],
-  exports : ['APP_NAME','MONGO']
+  exports : ['APP_NAME',]
 })
 export class DatabaseModule {}
