@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, Inject } from '@nestjs/common'
+import { Db } from 'mongodb'
+
 import { Product } from '../entities/products.entity'
 import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto'
 
 @Injectable()
 export class ProductsService {
+
+  constructor(@Inject('MONGO' ) private dataBase : Db ) {}
   private counterId = 5
   private products : Product[] = [
     {
@@ -83,5 +87,10 @@ export class ProductsService {
     if ( index === -1) throw new NotFoundException(`Product #${id} not found`)
     this.products.splice(index, 1)
     return id
+  }
+
+  getTask(){
+    const tasksCollection = this.dataBase.collection('tasks')
+    return tasksCollection.find().toArray()
   }
 }

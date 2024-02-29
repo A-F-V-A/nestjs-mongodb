@@ -20,17 +20,6 @@ export class ProductsController {
       private configService: ConfigService
   ) {}
 
-  @Get('global')
-  @ApiOperation({summary: 'Env global'})
-  getGlobal(){
-    const apiKey = this.configService.get('API_KEY')
-    return {
-      message: `name app:${this.appName} configService:${apiKey}`
-    }
-  }
-
-
-
   @Get('')
   getProducts(
     @Query('limit')  limit = 100,
@@ -41,6 +30,20 @@ export class ProductsController {
       message: `This action returns all products. Limit: ${limit}, offset: ${offset}, brand: ${brand}`,
       result: this.productsService.findAll()
     }
+  }
+
+  @Get('global')
+  @ApiOperation({summary: 'Env global'})
+  getGlobal(){
+    const apiKey = this.configService.get('API_KEY')
+    return {
+      message: `name app:${this.appName} configService:${apiKey}`
+    }
+  }
+
+  @Get('tasks')
+  getTask(){
+    return this.productsService.getTask()
   }
 
   @Get('filter')
@@ -85,4 +88,6 @@ export class ProductsController {
       id : this.productsService.delete(+id)
     }
   }
+
+
 }
